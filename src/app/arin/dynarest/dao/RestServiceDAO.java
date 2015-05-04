@@ -1,10 +1,9 @@
 package app.arin.dynarest.dao;
 
-import java.io.Serializable;
 import java.util.List;
 
-import com.lcs.rservice.value.RestServiceMethod;
-import com.lcs.rservice.value.RestServiceModule;
+import app.arin.dynarest.value.RestServiceMethod;
+import app.arin.dynarest.value.RestServiceModule;
 
 public interface RestServiceDAO  {
 

@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,7 +27,6 @@ import app.arin.dynarest.value.RestServiceMethod;
 import app.arin.dynarest.value.RestServiceMethodException;
 import app.arin.dynarest.value.RestServiceMethodInputParameter;
 import app.arin.dynarest.value.RestServiceModule;
-
 import flexjson.JSONDeserializer;
 
 @Controller
@@ -144,8 +142,8 @@ public class RestServiceController {
 		try {
 			targetMethod = getMethod(targetApi.getClass(), restMethod);
 		} catch (SecurityException excp) {
-			log.error("User : " + UserUtil.getCurrentUser() + ", do not have access to " + moduleUrl, excp);
-			response.sendError(HttpServletResponse.SC_FORBIDDEN, "User : " + UserUtil.getCurrentUser() + ", do not have access to " + moduleUrl);
+			log.error("Current user don't have access to " + moduleUrl, excp);
+			response.sendError(HttpServletResponse.SC_FORBIDDEN, "Current user don't have access to " + moduleUrl);
 			return null;
 		} catch (ClassNotFoundException excp) {
 			log.error(moduleUrl + ":" + methodUrl, excp);
@@ -184,7 +182,7 @@ public class RestServiceController {
 			RestServiceValidator validator = (RestServiceValidator)appContext.getBean("restValidator");
 			
 			if(validator != null && validator.isAllowed(restModule, restMethod, parameterValues)== false) {
-				response.sendError(HttpServletResponse.SC_FORBIDDEN, "User : " + UserUtil.getCurrentUser() + ", do not have access to " + moduleUrl);
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Current user don't have access to " + moduleUrl);
 				return null;
 			}
 		}
@@ -221,13 +219,13 @@ public class RestServiceController {
 		}
 		
 		Map model = new HashMap();
-		model.put(Constants.RESPONSE_STRING_DATA, restResponse);
+		model.put("responseData", restResponse);
 		
 		if("json".equalsIgnoreCase(responseOutputType)) {
-			model.put(Constants.RESPONSE_CONTENT_TYPE, "application/json;charset=UTF-8");
+			model.put("Content-Type", "application/json;charset=UTF-8");
 		}
 		
-   		return new ModelAndView(Constants.RESPONSE_STRING_VIEW, model);	
+   		return new ModelAndView("responseStringView", model);	
 	}
 	
 	private Method getMethod(Class a_class, RestServiceMethod a_restMethod) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
@@ -262,11 +260,5 @@ public class RestServiceController {
 		}
 		
 		return returnMethod;
-	}
-	
-	@RequestMapping(value="/showServices/**")
-	public String listServices(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException{
-		model.addAttribute("ModuleList", restServService.getAllServices());
-		return "serviceList";	
 	}
 }

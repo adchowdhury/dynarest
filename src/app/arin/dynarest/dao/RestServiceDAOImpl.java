@@ -1,15 +1,13 @@
 package app.arin.dynarest.dao;
 
-import java.io.Serializable;
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import app.arin.dynarest.value.RestServiceMethod;
 import app.arin.dynarest.value.RestServiceModule;
 
-@Repository("restServiceModule")
-public class RestServiceDAOImpl extends HibernateDAO implements RestServiceDAO {
+public class RestServiceDAOImpl extends HibernateDaoSupport implements RestServiceDAO {
 
 	@Override
 	public RestServiceModule findRestServiceModule(String moduleURL) {
@@ -22,7 +20,7 @@ public class RestServiceDAOImpl extends HibernateDAO implements RestServiceDAO {
 
 	@Override
 	public RestServiceMethod findRestServiceMethod(RestServiceModule module, String methodURL) {
-		List<RestServiceMethod> restServiceMethods =  getHibernateTemplate().find("from RestServiceMethod where moduleId = ? and methodUrl = ?", module.getModuleId(), methodURL);
+		List<RestServiceMethod> restServiceMethods =  getHibernateTemplate().find("from RestServiceMethod where moduleId = ? and methodUrl = ?", new Object[] {module.getModuleId(), methodURL});
 		if(restServiceMethods != null && restServiceMethods.size() > 0){
 			return restServiceMethods.get(0);
 		}

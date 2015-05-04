@@ -1,7 +1,7 @@
 package app.arin.dynarest.service;
 
-import com.lcs.rservice.value.RestServiceMethod;
-import com.lcs.rservice.value.RestServiceModule;
+import app.arin.dynarest.value.RestServiceMethod;
+import app.arin.dynarest.value.RestServiceModule;
 
 /**
  * The application can use thread local or other mechanism to get <br />current user and based on 
